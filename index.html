@@ -1,1 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adarsh Dharmendra Singh — IT Support & Web Development</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
 
+  :root {
+    --bg: #0D1210;
+    --bg-panel: #121A17;
+    --bg-panel-light: #16201C;
+    --green: #3DDC84;
+    --green-dim: #2A9960;
+    --white: #E8ECE9;
+    --gray: #8A958E;
+    --gray-dim: #5C655F;
+    --amber: #E8A33D;
+    --line: #233029;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Scanline signature element */
+  .scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.5;
+    z-index: 100;
+    pointer-events: none;
+    animation: scan 8s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { top: 0%; opacity: 0; }
+    5% { opacity: 0.6; }
+    95% { opacity: 0.6; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  .noise-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(circle, rgba(61,220,132,0.015) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* Top status bar */
+  .statusbar {
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+    background: var(--bg-panel);
+  }
+
+  .statusbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .status-item {
+    font-size: 12px;
+    color: var(--gray);
+    letter-spacing: 0.04em;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 7px;
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Hero */
+  .hero {
+    padding: 100px 0 80px;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    color: var(--green);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--green);
+  }
+
+  .hero h1 {
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 span {
+    color: var(--green);
+  }
+
+  .hero-role {
+    font-size: 19px;
+    color: var(--gray);
+    margin-bottom: 28px;
+    max-width: 560px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--gray-dim);
+  }
+
+  .hero-meta a {
+    color: var(--gray);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .hero-meta a:hover {
+    color: var(--green);
+    border-bottom-color: var(--green);
+  }
+
+  /* Frame decoration - viewfinder corners */
+  .viewfinder {
+    position: absolute;
+    top: 40px;
+    right: 28px;
+    width: 90px;
+    height: 90px;
+    opacity: 0.5;
+  }
+
+  .viewfinder .corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--green);
+  }
+  .viewfinder .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .viewfinder .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .viewfinder .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .viewfinder .br { bottom: 0; right: 0; border-left: none; border-top: none; }
+  .viewfinder .rec {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 9px;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+  }
+
+  /* Section structure */
+  section {
+    padding: 64px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 36px;
+  }
+
+  /* Log-line panel header used across sections */
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+  }
+
+  .about-text p {
+    color: var(--gray);
+    margin-bottom: 16px;
+    font-size: 15.5px;
+  }
+
+  .about-text strong {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .stat-block {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--gray-dim);
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 15px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* Project card */
+  .project-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .project-feed {
+    background: var(--bg);
+    padding: 22px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .feed-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+  }
+
+  .feed-tag .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .project-body {
+    padding: 26px;
+  }
+
+  .project-body h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .project-sub {
+    color: var(--gray-dim);
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .project-body ul {
+    list-style: none;
+    margin-bottom: 18px;
+  }
+
+  .project-body li {
+    color: var(--gray);
+    font-size: 14.5px;
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 9px;
+  }
+
+  .project-body li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+  }
+
+  .tag-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--gray);
+    letter-spacing: 0.03em;
+  }
+
+  /* Skills */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .skill-row {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+
+  .skill-row .cat {
+    font-size: 11px;
+    color: var(--gray-dim);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .skill-row .items {
+    color: var(--white);
+    font-size: 14px;
+  }
+
+  /* Certifications - log style */
+  .log-list {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .log-entry {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+
+  .log-entry:nth-child(odd) { background: var(--bg-panel); }
+  .log-entry:nth-child(even) { background: var(--bg-panel-light); }
+
+  .log-status {
+    color: var(--green);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    width: 80px;
+  }
+
+  .log-text { color: var(--gray); }
+
+  /* Contact */
+  .contact-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--green-dim);
+    border-radius: 6px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .contact-panel h2 {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+
+  .contact-panel p {
+    color: var(--gray);
+    margin-bottom: 26px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover {
+    background: #4eeb95;
+  }
+
+  .btn-secondary {
+    border: 1px solid var(--line);
+    color: var(--white);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  footer {
+    padding: 28px 0;
+    text-align: center;
+    color: var(--gray-dim);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 720px) {
+    .hero h1 { font-size: 36px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .viewfinder { display: none; }
+    .hero-meta { flex-direction: column; gap: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scanline, .status-dot, .feed-tag .dot { animation: none; }
+    .reveal { transition: none; opacity: 1; transform: none; }
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="scanline"></div>
+<div class="noise-overlay"></div>
+
+<div class="statusbar">
+  <div class="container">
+    <div class="status-item"><span class="status-dot"></span><span class="mono">SYSTEM ONLINE</span></div>
+    <div class="status-item mono">NALLASOPARA EAST, MAHARASHTRA</div>
+    <div class="status-item mono" id="clock">00:00:00</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="container">
+    <div class="viewfinder">
+      <div class="rec mono">● REC</div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+    </div>
+    <div class="hero-eyebrow mono">PROFILE_001 / ACTIVE</div>
+    <h1>Adarsh Dharmendra<br><span>Singh</span></h1>
+    <p class="hero-role">B.Sc. IT graduate building toward Web Development and IT Support — I like systems that watch, log, and explain themselves clearly. This page is one of them.</p>
+    <div class="hero-meta mono">
+      <a href="mailto:adarshsingh82084@gmail.com">adarshsingh82084@gmail.com</a>
+      <a href="#" id="github-link">github.com/your-username</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="container">
+    <div class="section-label mono">// 01 — ABOUT</div>
+    <h2 class="section-title">Background</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I completed my <strong>B.Sc. in Information Technology</strong> from VIVA College, University of Mumbai, in 2023. Along the way I picked up front-end basics, foundational Python, and a working comfort with troubleshooting systems rather than just reading about them.</p>
+        <p>My clearest hands-on project was a <strong>Smart CCTV Camera system</strong> — setting up hardware, wiring the monitoring logic, and debugging the kind of small failures that only show up once a system is actually running. That experience shaped how I think about IT support: most of the job is staying calm while something that should work, doesn't, yet.</p>
+        <p>I'm now focused on strengthening my front-end skills and looking for a Web Development or IT Support role where I can keep building real, working things — like this site.</p>
+      </div>
+      <div>
+        <div class="stat-block">
+          <div class="stat-label mono">GRADUATION</div>
+          <div class="stat-value">B.Sc. IT — 2023</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label mono">FOCUS AREA</div>
+          <div class="stat-value">Web Dev / IT Support</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label mono">LANGUAGES</div>
+          <div class="stat-value">Hindi (Fluent), English</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <div class="section-label mono">// 02 — PROJECTS</div>
+    <h2 class="section-title">Featured Build</h2>
+
+    <div class="project-card">
+      <div class="project-feed">
+        <span class="feed-tag mono"><span class="dot"></span>MONITORING ACTIVE</span>
+        <span class="mono" style="font-size:11px; color:var(--gray-dim);">CAM_01 / SECTOR_A</span>
+      </div>
+      <div class="project-body">
+        <h3>Smart CCTV Camera System</h3>
+        <div class="project-sub mono">Academic Project — Surveillance & Monitoring</div>
+        <ul>
+          <li>Set up and configured a camera-based monitoring system, handling hardware connections, positioning, and basic network troubleshooting end to end.</li>
+          <li>Used foundational Python to support system operation, including testing the monitoring workflow and verifying device connectivity.</li>
+          <li>Diagnosed and resolved setup issues independently — the kind of practical troubleshooting that translates directly into IT support and helpdesk work.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag mono">Python</span>
+          <span class="tag mono">Hardware Setup</span>
+          <span class="tag mono">Networking Basics</span>
+          <span class="tag mono">Troubleshooting</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-feed">
+        <span class="feed-tag mono" style="color:var(--green);"><span class="dot" style="background:var(--green);"></span>THIS SITE</span>
+        <span class="mono" style="font-size:11px; color:var(--gray-dim);">CAM_02 / META</span>
+      </div>
+      <div class="project-body">
+        <h3>Personal Portfolio</h3>
+        <div class="project-sub mono">HTML, CSS — Self-Initiated</div>
+        <ul>
+          <li>Built and designed this site from scratch to practice front-end fundamentals: layout, responsive design, and small interaction details.</li>
+          <li>Structured the page around a monitoring-console theme as a deliberate design choice, tying the visual language back to the CCTV project above.</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag mono">HTML5</span>
+          <span class="tag mono">CSS3</span>
+          <span class="tag mono">Responsive Design</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <div class="section-label mono">// 03 — SKILLS</div>
+    <h2 class="section-title">Technical Capabilities</h2>
+    <div class="skills-grid">
+      <div class="skill-row">
+        <div class="cat mono">WEB</div>
+        <div class="items">HTML, Front-End Fundamentals, Responsive Layout</div>
+      </div>
+      <div class="skill-row">
+        <div class="cat mono">PROGRAMMING</div>
+        <div class="items">Python — foundational scripting & logic</div>
+      </div>
+      <div class="skill-row">
+        <div class="cat mono">IT SUPPORT</div>
+        <div class="items">Windows Troubleshooting, Hardware Setup, Networking Basics</div>
+      </div>
+      <div class="skill-row">
+        <div class="cat mono">TOOLS</div>
+        <div class="items">MS Office, Advanced Excel, Website Management</div>
+      </div>
+      <div class="skill-row">
+        <div class="cat mono">AI / ML</div>
+        <div class="items">Machine Learning Basics, AI Fundamentals</div>
+      </div>
+      <div class="skill-row">
+        <div class="cat mono">OTHER</div>
+        <div class="items">Digital Marketing, Internet Research</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certifications">
+  <div class="container">
+    <div class="section-label mono">// 04 — CERTIFICATIONS</div>
+    <h2 class="section-title">Training Log</h2>
+    <div class="log-list mono">
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Introduction to Front End Development</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Python for Beginners</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Introduction to Artificial Intelligence</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Machine Learning Using Python</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Artificial Intelligence Beginners Guide</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Gemini in Google Drive</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Advance Excel — I-TECH Computer Education</span></div>
+      <div class="log-entry"><span class="log-status">[VERIFIED]</span><span class="log-text">Diploma in MS Office — I-TECH Computer Education</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="contact-panel">
+      <h2>Let's talk</h2>
+      <p>Open to Web Development and IT Support roles — happy to walk through the CCTV project or anything else on this page.</p>
+      <div class="btn-row">
+        <a href="mailto:adarshsingh82084@gmail.com" class="btn btn-primary">Email Me</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container mono">
+    LAST UPDATED: <span id="footer-date"></span> · BUILT WITH HTML &amp; CSS
+  </div>
+</footer>
+
+<script>
+  // Live clock in status bar
+  function updateClock() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('clock').textContent = `${hh}:${mm}:${ss}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Footer date
+  document.getElementById('footer-date').textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('section');
+  revealEls.forEach(el => el.classList.add('reveal'));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+                                                                  </html>
